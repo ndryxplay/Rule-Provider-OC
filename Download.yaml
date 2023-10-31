@@ -1,0 +1,5 @@
+payload:
+ # Download sites
+  - DOMAIN-SUFFIX,psgamedl.com
+  - DOMAIN-SUFFIX,vimm.net
+  - DOMAIN-KEYWORD,download
