@@ -1,0 +1,196 @@
+---
+proxy-providers:
+  Vmess:
+    type: file
+    path: "./proxy_provider/vmess.yaml"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 30
+  Vless:
+    type: file
+    path: "./proxy_provider/vless.yaml"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 30
+  Trojan:
+    type: file
+    path: "./proxy_provider/trojan.yaml"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 30
+  TEST:
+    type: file
+    path: "./proxy_provider/tesbugs.yaml"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 30
+proxy-groups:
+- name: Streaming
+  type: select
+  disable-udp: false
+  proxies:
+  - Vmess-LB
+  - Vless-LB
+  - Trojan-LB
+  - Auto
+  - DIRECT
+- name: Games
+  type: select
+  disable-udp: false
+  proxies:
+  - Vmess-LB
+  - Vless-LB
+  - Trojan-LB
+  - Auto
+  - DIRECT
+- name: Ewallet
+  type: select
+  disable-udp: false
+  proxies:
+  - Vmess-LB
+  - Vless-LB
+  - Trojan-LB
+  - Auto
+  - DIRECT
+- name: Sosmed
+  type: select
+  disable-udp: false
+  proxies:
+  - Vmess-LB
+  - Vless-LB
+  - Trojan-LB
+  - Auto
+  - DIRECT
+- name: Vmess-LB
+  type: load-balance
+  strategy: round-robin
+  disable-udp: false
+  use:
+  - Vmess
+  url: http://www.gstatic.com/generate_204
+  interval: 30
+- name: Vless-LB
+  type: load-balance
+  strategy: round-robin
+  disable-udp: false
+  use:
+  - Vless
+  url: http://www.gstatic.com/generate_204
+  interval: 30
+- name: Trojan-LB
+  type: load-balance
+  strategy: round-robin
+  disable-udp: false
+  use:
+  - Trojan
+  url: http://www.gstatic.com/generate_204
+  interval: 30
+- name: Auto
+  type: url-test
+  disable-udp: false
+  proxies:
+  - Vmess-LB
+  - Vless-LB
+  url: http://www.gstatic.com/generate_204
+  interval: 30
+rule-providers:
+  Direct:
+    type: file
+    behavior: classical
+    path: "./rule_provider/direct.yaml"
+  Reject:
+    type: file
+    behavior: classical
+    path: "./rule_provider/reject.yaml"
+  Streaming:
+    type: file
+    behavior: classical
+    path: "./rule_provider/StreamingQ.yaml"
+  Games:
+    type: file
+    behavior: classical
+    path: "./rule_provider/GamingQ.yaml"
+  Sosmed:
+    type: file
+    behavior: classical
+    path: "./rule_provider/SosmedQ.yaml"
+  Ewallet:
+    type: file
+    behavior: classical
+    path: "./rule_provider/ewallet.yaml"
+  Whatsapp:
+    type: file
+    behavior: classical
+    path: "./rule_provider/Whatsapp.yaml"
+  Indogroup:
+    type: file
+    behavior: classical
+    path: "./rule_provider/Indo-group.yaml"
+rules:
+- RULE-SET,Sosmed,Sosmed
+- RULE-SET,Ewallet,Ewallet
+- RULE-SET,Whatsapp,Ewallet
+- RULE-SET,Indogroup,Ewallet
+- RULE-SET,Streaming,Streaming
+- RULE-SET,Games,Games
+- RULE-SET,Direct,DIRECT
+- RULE-SET,Reject,REJECT
+- MATCH,GLOBAL
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: redir-host
+  listen: 0.0.0.0:7874
+  respect-rules: true
+  nameserver:
+  - tls://dns.google
+  - https://dns.google/dns-query
+  fallback:
+  - tls://dns.google
+  - https://dns.google/dns-query
+  default-nameserver:
+  - 8.8.8.8
+  - 8.8.4.4
+  proxy-server-nameserver:
+  - 114.114.114.114
+  - 119.29.29.29
+  - 8.8.8.8
+  - 1.1.1.1
+redir-port: 7892
+tproxy-port: 7895
+port: 7890
+socks-port: 7891
+mixed-port: 7893
+mode: rule
+log-level: silent
+allow-lan: true
+external-controller: 0.0.0.0:9090
+secret: reyre
+bind-address: "*"
+external-ui: "/usr/share/openclash/ui"
+external-ui-name: metacubexd
+keep-alive-interval: 15
+keep-alive-idle: 600
+ipv6: false
+tcp-concurrent: true
+unified-delay: true
+geox-url: {}
+tun:
+  enable: true
+  stack: system
+  device: utun
+  dns-hijack:
+  - 127.0.0.1:53
+  endpoint-independent-nat: true
+  auto-route: false
+  auto-detect-interface: false
+  auto-redirect: false
+  strict-route: false
+profile:
+  store-selected: true
+authentication:
+- Clash:reyre
